@@ -1,0 +1,52 @@
+services:
+  flight-api:
+    build:
+      context: ./backend
+    container_name: flight-api
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://flight-postgres:5432/flight_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=voco_07_07
+    depends_on:
+      - flight-postgres
+    networks:
+      - flight-network
+
+  flight-postgres:
+    image: postgres:18-alpine
+    container_name: flight-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: voco_07_07
+      POSTGRES_DB: flight_db
+    networks:
+      - flight-network
+
+  flight-redis:
+    image: redis:latest
+    container_name: flight-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - flight-network
+
+  flight-pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: flight-pgadmin
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@flight.com
+      PGADMIN_DEFAULT_PASSWORD: voco_07_07
+    depends_on:
+      - flight-postgres
+    networks:
+      - flight-network
+
+networks:
+  flight-network:
+    driver: bridge
