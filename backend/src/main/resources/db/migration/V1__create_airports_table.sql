@@ -1,0 +1,7 @@
+CREATE TABLE airports (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    iata_code VARCHAR(3) NOT NULL UNIQUE,
+    city VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL
+);
