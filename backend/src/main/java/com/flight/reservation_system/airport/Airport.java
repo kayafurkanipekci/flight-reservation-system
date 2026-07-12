@@ -5,6 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 /*
 databse yazarken mesela iata_code şeklinde databse'de tutulması gerekiyorsa java'da iataCode şeklinde tutulması gerekiyormuş.
@@ -17,6 +22,10 @@ long, integer, varchar, text --> String
 
 @Entity
 @Table(name = "airports")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,39 +35,4 @@ public class Airport {
     private String city;
     private String country;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIataCode() {
-        return iataCode;
-    }
-
-    public void setIataCode(String iataCode) {
-        this.iataCode = iataCode;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
 }
