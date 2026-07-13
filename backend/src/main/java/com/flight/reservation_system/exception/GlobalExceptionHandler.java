@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.flight.reservation_system.auth.InvalidCredentialsException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -41,6 +43,17 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<DtoErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        DtoErrorResponse error = new DtoErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Unauthorized",
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
     @ExceptionHandler(RuntimeException.class) // Service'lerindeki orElseThrow(() -> new RuntimeException("... not found ...")) çağrılarının hepsi bu tipte. Burada 404'e çeviriyoruz. 
