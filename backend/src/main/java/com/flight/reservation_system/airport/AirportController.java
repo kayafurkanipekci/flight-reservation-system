@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/airports")
 public class AirportController {
-    
+
     private final AirportService airportService;
 
     public AirportController(AirportService airportService) {
@@ -32,13 +34,13 @@ public class AirportController {
     }
 
     @PostMapping
-    public Airport createAirport(@RequestBody Airport airport) {
-        return airportService.createAirport(airport);
+    public Airport createAirport(@Valid @RequestBody DtoAirportRequest request) {
+        return airportService.createAirport(request);
     }
 
     @PutMapping("/{id}")
-    public Airport updateAirport(@PathVariable Long id, @RequestBody Airport airport) {
-        return airportService.updateAirport(id, airport);
+    public Airport updateAirport(@PathVariable Long id, @Valid @RequestBody DtoAirportRequest request) {
+        return airportService.updateAirport(id, request);
     }
 
     @DeleteMapping("/{id}")
