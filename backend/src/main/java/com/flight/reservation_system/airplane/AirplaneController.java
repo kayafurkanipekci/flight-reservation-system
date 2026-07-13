@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/airplanes")
 public class AirplaneController {
-    
+
     private final AirplaneService airplaneService;
 
     public AirplaneController(AirplaneService airplaneService) {
@@ -32,13 +34,13 @@ public class AirplaneController {
     }
 
     @PostMapping
-    public Airplane createAirplane(@RequestBody Airplane airplane) {
-        return airplaneService.createAirplane(airplane);
+    public Airplane createAirplane(@Valid @RequestBody DtoAirplaneRequest request) {
+        return airplaneService.createAirplane(request);
     }
 
     @PutMapping("/{id}")
-    public Airplane updateAirplane(@PathVariable Long id, @RequestBody Airplane airplane) {
-        return airplaneService.updateAirplane(id, airplane);
+    public Airplane updateAirplane(@PathVariable Long id, @Valid @RequestBody DtoAirplaneRequest request) {
+        return airplaneService.updateAirplane(id, request);
     }
 
     @DeleteMapping("/{id}")

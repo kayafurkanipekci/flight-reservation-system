@@ -6,36 +6,41 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AirplaneService {
-    
-    private final AirplaneRepository airportRepository; 
-    
-    public AirplaneService(AirplaneRepository airportRepository) {
-        this.airportRepository = airportRepository;
+
+    private final AirplaneRepository airplaneRepository;
+
+    public AirplaneService(AirplaneRepository airplaneRepository) {
+        this.airplaneRepository = airplaneRepository;
     }
 
     public List<Airplane> getAllAirplanes() {
-        return airportRepository.findAll();
+        return airplaneRepository.findAll();
     }
 
     public Airplane getAirplaneById(Long id) {
-    return airportRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Airplane not found with id: " + id));
+        return airplaneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Airplane not found with id: " + id));
     }
 
-    public Airplane createAirplane(Airplane airport) {
-        return airportRepository.save(airport);
+    public Airplane createAirplane(DtoAirplaneRequest request) {
+        Airplane airplane = new Airplane();
+        airplane.setModel(request.getModel());
+        airplane.setTailNumber(request.getTailNumber());
+        airplane.setCapacity(request.getCapacity());
+        airplane.setAirline(request.getAirline());
+        return airplaneRepository.save(airplane);
     }
 
-    public Airplane updateAirplane(Long id, Airplane updatedAirplane) {
+    public Airplane updateAirplane(Long id, DtoAirplaneRequest request) {
         Airplane existing = getAirplaneById(id);
-        existing.setModel(updatedAirplane.getModel());
-        existing.setTailNumber(updatedAirplane.getTailNumber());
-        existing.setCapacity(updatedAirplane.getCapacity());
-        existing.setAirline(updatedAirplane.getAirline());
-        return airportRepository.save(existing);
+        existing.setModel(request.getModel());
+        existing.setTailNumber(request.getTailNumber());
+        existing.setCapacity(request.getCapacity());
+        existing.setAirline(request.getAirline());
+        return airplaneRepository.save(existing);
     }
 
     public void deleteAirplane(Long id) {
-        airportRepository.deleteById(id);
+        airplaneRepository.deleteById(id);
     }
 }
