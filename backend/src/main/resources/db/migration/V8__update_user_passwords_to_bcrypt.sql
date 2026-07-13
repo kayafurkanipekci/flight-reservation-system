@@ -1,0 +1,2 @@
+UPDATE users SET password = '$2a$12$zX.9AK/UFkxz4Upl2oXH8OEGQYj82XF4wmTzdmCkMMTlkHd5nsuWm' WHERE email = 'admin@flight.com';
+UPDATE users SET password = '$2a$12$zX.9AK/UFkxz4Upl2oXH8OEGQYj82XF4wmTzdmCkMMTlkHd5nsuWm' WHERE email = 'ahmet@flight.com';
