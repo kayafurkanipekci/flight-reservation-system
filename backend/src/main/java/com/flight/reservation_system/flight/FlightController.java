@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/flights")
 public class FlightController {
@@ -32,17 +34,18 @@ public class FlightController {
     }
 
     @PostMapping
-    public DtoFlightResponse createFlight(@RequestBody DtoFlightRequest request) {
+    public DtoFlightResponse createFlight(@Valid @RequestBody DtoFlightRequest request) {
         return flightService.createFlight(request);
     }
 
     @PutMapping("/{id}")
-    public DtoFlightResponse updateFlight(@PathVariable Long id, @RequestBody DtoFlightRequest request) {
+    public DtoFlightResponse updateFlight(@PathVariable Long id, @Valid @RequestBody DtoFlightRequest request) {
         return flightService.updateFlight(id, request);
     }
-
+    
     @DeleteMapping("/{id}")
     public void deleteFlight(@PathVariable Long id) {
         flightService.deleteFlight(id);
-    }
+    } 
+
 }
