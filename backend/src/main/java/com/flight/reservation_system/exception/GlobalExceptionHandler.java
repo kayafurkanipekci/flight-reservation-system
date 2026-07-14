@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -54,6 +55,17 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class) // Spring Security, kullanıcı yetkisi olmayan bir endpoint'e erişmeye çalıştığında.
+    public ResponseEntity<DtoErrorResponse> handleAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
+        DtoErrorResponse error = new DtoErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                "Forbidden",
+                "You do not have permission to perform this action.",
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
     @ExceptionHandler(RuntimeException.class) // Service'lerindeki orElseThrow(() -> new RuntimeException("... not found ...")) çağrılarının hepsi bu tipte. Burada 404'e çeviriyoruz. 
