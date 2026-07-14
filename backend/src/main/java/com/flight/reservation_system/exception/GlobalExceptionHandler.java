@@ -80,6 +80,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<DtoErrorResponse> handleIllegalState(IllegalStateException ex) {
+        DtoErrorResponse error = new DtoErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(Exception.class) // exception, Java'da meydana gelen tüm hataların temel sınıfıdır.
     // Bu exception, programın çalışması sırasında ortaya çıkan herhangi bir hatayı temsil eder. (Diğerlerinen kaçıp gelen)
     public ResponseEntity<DtoErrorResponse> handleGenericException(Exception ex) {
