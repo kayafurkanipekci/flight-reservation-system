@@ -2,6 +2,7 @@ package com.flight.reservation_system.user;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +19,13 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<DtoUserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public DtoUserResponse getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }

@@ -2,6 +2,7 @@ package com.flight.reservation_system.airplane;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +35,19 @@ public class AirplaneController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Airplane createAirplane(@Valid @RequestBody DtoAirplaneRequest request) {
         return airplaneService.createAirplane(request);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Airplane updateAirplane(@PathVariable Long id, @Valid @RequestBody DtoAirplaneRequest request) {
         return airplaneService.updateAirplane(id, request);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteAirplane(@PathVariable Long id) {
         airplaneService.deleteAirplane(id);
     }

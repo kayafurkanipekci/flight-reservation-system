@@ -2,6 +2,7 @@ package com.flight.reservation_system.airport;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +35,19 @@ public class AirportController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Airport createAirport(@Valid @RequestBody DtoAirportRequest request) {
         return airportService.createAirport(request);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Airport updateAirport(@PathVariable Long id, @Valid @RequestBody DtoAirportRequest request) {
         return airportService.updateAirport(id, request);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteAirport(@PathVariable Long id) {
         airportService.deleteAirport(id);
     }
