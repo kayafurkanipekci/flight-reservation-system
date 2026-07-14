@@ -1,0 +1,3 @@
+jwt:
+  secret: ZGVuZW1lLWFtYWNsaS10ZXN0LWp3dC1zZWNyZXQta2V5LWRlZ2lsLWdlcmNlaw==
+  expiration-ms: 86400000
