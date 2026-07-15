@@ -2,6 +2,8 @@ package com.flight.reservation_system.airport;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +16,7 @@ public class AirportService {
     public AirportService(AirportRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
-
+    @Cacheable(value = "airports", key = "'allAirports'")
     public List<Airport> getAllAirports() {
         return airportRepository.findAll();
     }
@@ -23,7 +25,8 @@ public class AirportService {
         return airportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Airport not found with id: " + id));
     }
-
+    
+    @CacheEvict(value = "airports", key = "'allAirports'")
     public Airport createAirport(DtoAirportRequest request) {
         Airport airport = new Airport();
         airport.setName(request.getName());
@@ -33,6 +36,7 @@ public class AirportService {
         return airportRepository.save(airport);
     }
 
+    @CacheEvict(value = "airports", key = "'allAirports'")
     public Airport updateAirport(Long id, DtoAirportRequest request) {
         Airport existing = getAirportById(id);
         existing.setName(request.getName());
@@ -42,6 +46,7 @@ public class AirportService {
         return airportRepository.save(existing);
     }
 
+    @CacheEvict(value = "airports", key = "'allAirports'")
     public void deleteAirport(Long id) {
         airportRepository.deleteById(id);
     }
