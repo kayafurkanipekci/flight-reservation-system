@@ -68,9 +68,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
-    @ExceptionHandler(RuntimeException.class) // Service'lerindeki orElseThrow(() -> new RuntimeException("... not found ...")) çağrılarının hepsi bu tipte. Burada 404'e çeviriyoruz. 
-    // ileride farklı sebeplerle RuntimeException fırlatırsan hepsi 404 olarak yorumlanır — şimdilik böyle ama ileride özel exception sınfları ekleyeceğiz.
-    public ResponseEntity<DtoErrorResponse> handleRuntimeException(RuntimeException ex) {
+    @ExceptionHandler(com.flight.reservation_system.exception.ResourceNotFoundException.class)
+    public ResponseEntity<DtoErrorResponse> handleResourceNotFound(com.flight.reservation_system.exception.ResourceNotFoundException ex) {
         DtoErrorResponse error = new DtoErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "Not Found",
@@ -79,6 +78,18 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<DtoErrorResponse> handleRuntimeException(RuntimeException ex) {
+        DtoErrorResponse error = new DtoErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal Server Error",
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<DtoErrorResponse> handleIllegalState(IllegalStateException ex) {

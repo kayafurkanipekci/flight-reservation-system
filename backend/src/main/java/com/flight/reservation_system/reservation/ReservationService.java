@@ -2,6 +2,7 @@ package com.flight.reservation_system.reservation;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,20 +18,22 @@ import com.flight.reservation_system.user.UserRepository;
 
 @Service
 public class ReservationService {
-
     private final ReservationRepository reservationRepository;
     private final TicketRepository ticketRepository;
     private final FlightRepository flightRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ReservationService(ReservationRepository reservationRepository,
                                TicketRepository ticketRepository,
                                FlightRepository flightRepository,
-                               UserRepository userRepository) {
+                               UserRepository userRepository,
+                               ApplicationEventPublisher eventPublisher) {
         this.reservationRepository = reservationRepository;
         this.ticketRepository = ticketRepository;
         this.flightRepository = flightRepository;
         this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -46,23 +49,21 @@ public class ReservationService {
 
         List<DtoTicketRequest> ticketRequests = request.getTickets();
         List<DtoTicketResponse> ticketResponses = new java.util.ArrayList<>();
-
         int segmentOrder = 1;
         for (DtoTicketRequest ticketRequest : ticketRequests) {
             Flight flight = flightRepository.findById(ticketRequest.getFlightId())
                     .orElseThrow(() -> new RuntimeException("Flight not found with id: " + ticketRequest.getFlightId()));
-
             Ticket ticket = new Ticket();
             ticket.setReservation(savedReservation);
             ticket.setFlight(flight);
             ticket.setSeatNumber(ticketRequest.getSeatNumber());
             ticket.setSegmentOrder(segmentOrder);
-
             Ticket savedTicket = ticketRepository.save(ticket);
             ticketResponses.add(DtoTicketResponse.fromEntity(savedTicket));
-
             segmentOrder++;
         }
+
+        eventPublisher.publishEvent(new ReservationCreatedEvent(savedReservation.getId(), passenger.getEmail()));
 
         return new DtoReservationResponse(
                 savedReservation.getId(),

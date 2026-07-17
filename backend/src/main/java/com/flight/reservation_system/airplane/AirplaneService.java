@@ -26,7 +26,8 @@ public class AirplaneService {
     public DtoAirplaneResponse getAirplaneById(Long id) {
         return airplaneRepository.findById(id)
                 .map(DtoAirplaneResponse::fromEntity)
-                .orElseThrow(() -> new RuntimeException("Airplane not found with id: " + id));
+                .orElseThrow(() -> new com.flight.reservation_system.exception.ResourceNotFoundException(
+                        "Airplane not found with id: " + id));
     }
 
     @CacheEvict(value = "airplanes", key = "'allAirplanes'")
@@ -56,6 +57,8 @@ public class AirplaneService {
 
     private Airplane getAirplaneByIdEntity(Long id) {
         return airplaneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Airplane not found with id: " + id));
+                .orElseThrow(() -> new com.flight.reservation_system.exception.ResourceNotFoundException(
+                        "Airplane not found with id: " + id));
     }
 }
+

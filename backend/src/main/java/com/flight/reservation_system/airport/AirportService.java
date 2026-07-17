@@ -28,7 +28,8 @@ public class AirportService {
     public DtoAirportResponse getAirportById(Long id) {
         return airportRepository.findById(id)
                 .map(DtoAirportResponse::fromEntity)
-                .orElseThrow(() -> new RuntimeException("Airport not found with id: " + id));
+                .orElseThrow(() -> new com.flight.reservation_system.exception.ResourceNotFoundException(
+                        "Airport not found with id: " + id));
     }
 
     @CacheEvict(value = "airports", key = "'allAirports'")
@@ -58,6 +59,8 @@ public class AirportService {
 
     private Airport getAirportByIdEntity(Long id) {
         return airportRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Airport not found with id: " + id));
+                .orElseThrow(() -> new com.flight.reservation_system.exception.ResourceNotFoundException(
+                        "Airport not found with id: " + id));
     }
 }
+
