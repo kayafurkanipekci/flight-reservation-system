@@ -28,7 +28,7 @@ services:
       - flight-network
 
   flight-redis:
-    image: redis:latest
+    image: redis:7-alpine
     container_name: flight-redis
     ports:
       - "6379:6379"
@@ -47,6 +47,13 @@ services:
       - flight-postgres
     networks:
       - flight-network
+    
+  flight-mailhog:
+    image: mailhog/mailhog:latest
+    container_name: flight-mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
 
 networks:
   flight-network:
