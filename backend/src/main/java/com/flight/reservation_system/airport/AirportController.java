@@ -25,24 +25,24 @@ public class AirportController {
     }
 
     @GetMapping
-    public List<Airport> getAllAirports() {
+    public List<DtoAirportResponse> getAllAirports() {
         return airportService.getAllAirports();
     }
 
     @GetMapping("/{id}")
-    public Airport getAirportById(@PathVariable Long id) {
+    public DtoAirportResponse getAirportById(@PathVariable Long id) {
         return airportService.getAirportById(id);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Airport createAirport(@Valid @RequestBody DtoAirportRequest request) {
+    public DtoAirportResponse createAirport(@Valid @RequestBody DtoAirportRequest request) {
         return airportService.createAirport(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Airport updateAirport(@PathVariable Long id, @Valid @RequestBody DtoAirportRequest request) {
+    public DtoAirportResponse updateAirport(@PathVariable Long id, @Valid @RequestBody DtoAirportRequest request) {
         return airportService.updateAirport(id, request);
     }
 

@@ -16,38 +16,48 @@ public class AirportService {
     public AirportService(AirportRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
+
     @Cacheable(value = "airports", key = "'allAirports'")
-    public List<Airport> getAllAirports() {
-        return airportRepository.findAll();
+    public List<DtoAirportResponse> getAllAirports() {
+        return airportRepository.findAll()
+                .stream()
+                .map(DtoAirportResponse::fromEntity)
+                .toList();
     }
 
-    public Airport getAirportById(Long id) {
+    public DtoAirportResponse getAirportById(Long id) {
         return airportRepository.findById(id)
+                .map(DtoAirportResponse::fromEntity)
                 .orElseThrow(() -> new RuntimeException("Airport not found with id: " + id));
     }
-    
+
     @CacheEvict(value = "airports", key = "'allAirports'")
-    public Airport createAirport(DtoAirportRequest request) {
+    public DtoAirportResponse createAirport(DtoAirportRequest request) {
         Airport airport = new Airport();
         airport.setName(request.getName());
         airport.setIataCode(request.getIataCode());
         airport.setCity(request.getCity());
         airport.setCountry(request.getCountry());
-        return airportRepository.save(airport);
+        return DtoAirportResponse.fromEntity(airportRepository.save(airport));
     }
 
     @CacheEvict(value = "airports", key = "'allAirports'")
-    public Airport updateAirport(Long id, DtoAirportRequest request) {
-        Airport existing = getAirportById(id);
+    public DtoAirportResponse updateAirport(Long id, DtoAirportRequest request) {
+        Airport existing = getAirportByIdEntity(id);
         existing.setName(request.getName());
         existing.setIataCode(request.getIataCode());
         existing.setCity(request.getCity());
         existing.setCountry(request.getCountry());
-        return airportRepository.save(existing);
+        return DtoAirportResponse.fromEntity(airportRepository.save(existing));
     }
 
     @CacheEvict(value = "airports", key = "'allAirports'")
     public void deleteAirport(Long id) {
         airportRepository.deleteById(id);
+    }
+
+    private Airport getAirportByIdEntity(Long id) {
+        return airportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Airport not found with id: " + id));
     }
 }

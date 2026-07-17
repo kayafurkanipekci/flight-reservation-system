@@ -25,24 +25,24 @@ public class AirplaneController {
     }
 
     @GetMapping
-    public List<Airplane> getAllAirplanes() {
+    public List<DtoAirplaneResponse> getAllAirplanes() {
         return airplaneService.getAllAirplanes();
     }
 
     @GetMapping("/{id}")
-    public Airplane getAirplaneById(@PathVariable Long id) {
+    public DtoAirplaneResponse getAirplaneById(@PathVariable Long id) {
         return airplaneService.getAirplaneById(id);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Airplane createAirplane(@Valid @RequestBody DtoAirplaneRequest request) {
+    public DtoAirplaneResponse createAirplane(@Valid @RequestBody DtoAirplaneRequest request) {
         return airplaneService.createAirplane(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Airplane updateAirplane(@PathVariable Long id, @Valid @RequestBody DtoAirplaneRequest request) {
+    public DtoAirplaneResponse updateAirplane(@PathVariable Long id, @Valid @RequestBody DtoAirplaneRequest request) {
         return airplaneService.updateAirplane(id, request);
     }
 

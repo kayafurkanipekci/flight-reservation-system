@@ -16,37 +16,46 @@ public class AirplaneService {
     }
 
     @Cacheable(value = "airplanes", key = "'allAirplanes'")
-    public List<Airplane> getAllAirplanes() {
-        return airplaneRepository.findAll();
+    public List<DtoAirplaneResponse> getAllAirplanes() {
+        return airplaneRepository.findAll()
+                .stream()
+                .map(DtoAirplaneResponse::fromEntity)
+                .toList();
     }
 
-    public Airplane getAirplaneById(Long id) {
+    public DtoAirplaneResponse getAirplaneById(Long id) {
         return airplaneRepository.findById(id)
+                .map(DtoAirplaneResponse::fromEntity)
                 .orElseThrow(() -> new RuntimeException("Airplane not found with id: " + id));
     }
 
     @CacheEvict(value = "airplanes", key = "'allAirplanes'")
-    public Airplane createAirplane(DtoAirplaneRequest request) {
+    public DtoAirplaneResponse createAirplane(DtoAirplaneRequest request) {
         Airplane airplane = new Airplane();
         airplane.setModel(request.getModel());
         airplane.setTailNumber(request.getTailNumber());
         airplane.setCapacity(request.getCapacity());
         airplane.setAirline(request.getAirline());
-        return airplaneRepository.save(airplane);
+        return DtoAirplaneResponse.fromEntity(airplaneRepository.save(airplane));
     }
 
     @CacheEvict(value = "airplanes", key = "'allAirplanes'")
-    public Airplane updateAirplane(Long id, DtoAirplaneRequest request) {
-        Airplane existing = getAirplaneById(id);
+    public DtoAirplaneResponse updateAirplane(Long id, DtoAirplaneRequest request) {
+        Airplane existing = getAirplaneByIdEntity(id);
         existing.setModel(request.getModel());
         existing.setTailNumber(request.getTailNumber());
         existing.setCapacity(request.getCapacity());
         existing.setAirline(request.getAirline());
-        return airplaneRepository.save(existing);
+        return DtoAirplaneResponse.fromEntity(airplaneRepository.save(existing));
     }
 
     @CacheEvict(value = "airplanes", key = "'allAirplanes'")
     public void deleteAirplane(Long id) {
         airplaneRepository.deleteById(id);
+    }
+
+    private Airplane getAirplaneByIdEntity(Long id) {
+        return airplaneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Airplane not found with id: " + id));
     }
 }
