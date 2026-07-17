@@ -8,7 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,8 +22,15 @@ public abstract class BaseIntegrationTest {
     @ServiceConnection
     static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18-alpine");
 
+    // @Cacheable test ortamında da gerçek Redis'e gidiyor; böylece production davranışı birebir test ediliyor.
+    // (Manual start() çünkü postgres kalıbıyla aynı olsun.)
+    @ServiceConnection(name = "redis")
+    static final GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))
+            .withExposedPorts(6379);
+
     static {
         postgres.start();
+        redis.start();
     }
 
     @Autowired
