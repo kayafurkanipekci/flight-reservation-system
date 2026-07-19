@@ -6,12 +6,13 @@ import AirportsPage from './pages/AirportsPage';
 import AirplanesPage from './pages/AirplanesPage';
 import ReservationsPage from './pages/ReservationsPage';
 import FlightsPage from './pages/FlightsPage';
+import Layout from './components/Layout';
 
 
 // Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
-  return token ? <>{children}</> : <Navigate to="/login" />;
+  return token ? <Layout>{children}</Layout> : <Navigate to="/login" />;
 }
 
 function AppRoutes() {
