@@ -4,6 +4,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AirportsPage from './pages/AirportsPage';
 import AirplanesPage from './pages/AirplanesPage';
+import ReservationsPage from './pages/ReservationsPage';
+import FlightsPage from './pages/FlightsPage';
 
 
 // Protected route component
@@ -30,6 +32,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AirplanesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/flights"
+        element={
+          <ProtectedRoute>
+            <FlightsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/reservations"
+        element={
+          <ProtectedRoute>
+            <ReservationsPage />
           </ProtectedRoute>
         }
       />
