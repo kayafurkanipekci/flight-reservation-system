@@ -39,13 +39,13 @@ export default function LoginPage() {
           <img
             src="/logo.png"
             alt="ButterFlight Logo"
-            className="mt-3 h-16 w-auto object-contain"
+            className="mt-3 h-40 w-auto object-contain"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
           />
         </div>
-        <h2 className="mt-8 text-center text-2xl font-bold tracking-tight text-gray-900">
+        <h2 className="mt-5 text-center text-2xl font-bold tracking-tight text-gray-900">
           Sign in to your account
         </h2>
       </div>
