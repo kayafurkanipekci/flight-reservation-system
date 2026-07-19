@@ -1,1 +1,45 @@
 @import "tailwindcss";
+
+:root {
+  --brand-50: #E8F1F8;
+  --brand-100: #D1F8EF;
+  --brand-200: #A1E3F9;
+  --brand-300: #578FCA;
+  --brand-400: #3674B5;
+  --brand-500: #2C5FA0;
+  --brand-600: #1E4176;
+  --brand-700: #0F2847;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.bg-brand-50 {
+  background-color: var(--brand-50);
+}
+
+.text-brand-400 {
+  color: var(--brand-400);
+}
+
+.bg-brand-400 {
+  background-color: var(--brand-400);
+}
+
+.hover\:bg-brand-300:hover {
+  background-color: var(--brand-300);
+}
+
+.hover\:text-brand-300:hover {
+  color: var(--brand-300);
+}
+
+.border-gray-300 {
+  border-color: rgb(209, 213, 219);
+}
+
+.focus\:outline-brand-400:focus {
+  outline-color: var(--brand-400);
+}
