@@ -34,10 +34,18 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-brand-50 flex flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="mx-auto h-12 w-auto flex items-center justify-center">
-          <div className="text-3xl font-bold text-brand-400">ButterFlight</div>
+        <div className="mx-auto flex flex-col items-center justify-center">
+          <div className="text-3xl font-extrabold text-brand-500 tracking-tight">ButterFlight</div>
+          <img
+            src="/logo.png"
+            alt="ButterFlight Logo"
+            className="mt-3 h-16 w-auto object-contain"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
         </div>
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+        <h2 className="mt-8 text-center text-2xl font-bold tracking-tight text-gray-900">
           Sign in to your account
         </h2>
       </div>
