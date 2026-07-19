@@ -15,6 +15,19 @@ services:
     networks:
       - flight-network
 
+  flight-frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:8081/api
+    container_name: flight-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - flight-api
+    networks:
+      - flight-network
+
   flight-postgres:
     image: postgres:18-alpine
     container_name: flight-postgres
