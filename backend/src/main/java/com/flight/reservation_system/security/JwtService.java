@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import io.jsonwebtoken.io.Decoders;
 
 @Service
 public class JwtService {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
 
     @Value("${jwt.secret}")
     private String secret;
@@ -53,6 +57,7 @@ public class JwtService {
             Claims claims = parseClaims(token);
             return !claims.getExpiration().before(new Date());
         } catch (Exception e) {
+            log.warn("JWT invalid: {} - {}", e.getClass().getName(), e.getMessage());
             return false;
         }
     }

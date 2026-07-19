@@ -1,10 +1,13 @@
 server:
   port: 8081
+  error:
+    include-message: always
+    include-stacktrace: always
 
 spring:
   application:
     name: reservation-system
-  
+
   datasource:
     url: jdbc:postgresql://flight-postgres:5432/flight_db
     username: postgres
@@ -39,3 +42,8 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expiration-ms: 86400000
+
+logging:
+  level:
+    com.flight.reservation_system.security: DEBUG
+    org.springframework.web: DEBUG

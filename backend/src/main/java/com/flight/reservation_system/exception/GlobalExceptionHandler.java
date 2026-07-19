@@ -3,9 +3,12 @@ package com.flight.reservation_system.exception;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +18,8 @@ import com.flight.reservation_system.auth.InvalidCredentialsException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class) // ExceptionHandler -> bu tipte bir hata gelirse, bu metodu çalıştır
     // MethodArgumentNotValidException @Valid bir kural ihlali bulduğunda tam olarak bu exception'ı fırlatıyor.
@@ -31,7 +36,21 @@ public class GlobalExceptionHandler {
                 message,
                 LocalDateTime.now()
         );
+        log.warn("MethodArgumentNotValidException: {}", message, ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<DtoErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.error("HttpMessageNotReadableException -> {}", ex.getMessage(), ex);
+
+        DtoErrorResponse error = new DtoErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal Server Error",
+                ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().toString() : ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class) // Spring Data JPA, bir veritabanı constraint'i (UNIQUE, NOT NULL, FOREIGN KEY)
@@ -87,6 +106,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 LocalDateTime.now()
         );
+        log.error("RuntimeException -> {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
@@ -102,6 +122,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+
     @ExceptionHandler(Exception.class) // exception, Java'da meydana gelen tüm hataların temel sınıfıdır.
     // Bu exception, programın çalışması sırasında ortaya çıkan herhangi bir hatayı temsil eder. (Diğerlerinen kaçıp gelen)
     public ResponseEntity<DtoErrorResponse> handleGenericException(Exception ex) {
@@ -111,6 +132,7 @@ public class GlobalExceptionHandler {
                 "An unexpected error occurred.",
                 LocalDateTime.now()
         );
+        log.error("Unhandled Exception -> {}", ex.toString(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

@@ -2,6 +2,8 @@ package com.flight.reservation_system.airport;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,10 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/airports")
+// @CrossOrigin(origins = "http://localhost:5173")
 public class AirportController {
+
+    private static final Logger log = LoggerFactory.getLogger(AirportController.class);
 
     private final AirportService airportService;
 
@@ -26,7 +31,12 @@ public class AirportController {
 
     @GetMapping
     public List<DtoAirportResponse> getAllAirports() {
-        return airportService.getAllAirports();
+        try {
+            return airportService.getAllAirports();
+        } catch (Exception ex) {
+            log.error("Error in GET /api/airports -> {}", ex.toString(), ex);
+            throw ex;
+        }
     }
 
     @GetMapping("/{id}")
