@@ -20,6 +20,10 @@ public class DtoFlightResponse {
     private String departureAirportCity;
     private String arrivalAirportCode;
     private String arrivalAirportCity;
+    private Long airplaneId;
+    private Long departureAirportId;
+    private Long arrivalAirportId;
+    private String airline;
 
     public static DtoFlightResponse fromEntity(Flight flight) {
         return new DtoFlightResponse(
@@ -33,7 +37,11 @@ public class DtoFlightResponse {
                 flight.getDepartureAirport().getIataCode(),
                 flight.getDepartureAirport().getCity(),
                 flight.getArrivalAirport().getIataCode(),
-                flight.getArrivalAirport().getCity()
+                flight.getArrivalAirport().getCity(),
+                flight.getAirplane().getId(),
+                flight.getDepartureAirport().getId(),
+                flight.getArrivalAirport().getId(),
+                flight.getAirplane().getAirline()
         );
     }
 }
