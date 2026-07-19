@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AirportsPage from './pages/AirportsPage';
+import AirplanesPage from './pages/AirplanesPage';
+
 
 // Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -20,6 +22,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AirportsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/airplanes"
+        element={
+          <ProtectedRoute>
+            <AirplanesPage />
           </ProtectedRoute>
         }
       />
