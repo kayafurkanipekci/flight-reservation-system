@@ -69,7 +69,7 @@ export default function FlightModal({
     reset,
     setValue,
   } = useForm<FlightFormData>({
-    resolver: zodResolver(flightSchema),
+    resolver: zodResolver(flightSchema) as any,
     defaultValues: initialData
       ? {
           flightNumber: initialData.flightNumber ?? '',
