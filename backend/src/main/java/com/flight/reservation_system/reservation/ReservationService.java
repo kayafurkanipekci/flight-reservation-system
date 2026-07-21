@@ -3,6 +3,7 @@ package com.flight.reservation_system.reservation;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +54,17 @@ public class ReservationService {
         for (DtoTicketRequest ticketRequest : ticketRequests) {
             Flight flight = flightRepository.findById(ticketRequest.getFlightId())
                     .orElseThrow(() -> new RuntimeException("Flight not found with id: " + ticketRequest.getFlightId()));
+            
+            boolean seatExists = ticketRepository.existsByFlightAndSeatNumber(
+                flight, 
+                ticketRequest.getSeatNumber()
+            );
+            if (seatExists) {
+                throw new DataIntegrityViolationException(
+                    "Seat " + ticketRequest.getSeatNumber() + " is already booked on flight " + flight.getFlightNumber()
+                );
+            }
+            
             Ticket ticket = new Ticket();
             ticket.setReservation(savedReservation);
             ticket.setFlight(flight);
