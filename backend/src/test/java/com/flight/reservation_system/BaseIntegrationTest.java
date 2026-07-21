@@ -6,6 +6,8 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import org.testcontainers.containers.GenericContainer;
@@ -28,9 +30,20 @@ public abstract class BaseIntegrationTest {
     static final GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))
             .withExposedPorts(6379);
 
+    // MailHog: gerçek SMTP yok, testlerde ve CI'da mail gönderimini karşılayan sahte sunucu.
+    static final GenericContainer<?> mailhog = new GenericContainer<>(DockerImageName.parse("mailhog/mailhog:latest"))
+            .withExposedPorts(1025, 8025);
+
     static {
         postgres.start();
         redis.start();
+        mailhog.start();
+    }
+
+    @DynamicPropertySource
+    static void mailProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.mail.host", mailhog::getHost);
+        registry.add("spring.mail.port", () -> mailhog.getMappedPort(1025));
     }
 
     @Autowired
