@@ -45,6 +45,9 @@ jwt:
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
 logging:
+  structured:
+    format:
+      console: ecs
   level:
     com.flight.reservation_system.security: DEBUG
     org.springframework.web: DEBUG
@@ -52,7 +55,7 @@ logging:
 app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
-    
+
 management:
   endpoints:
     web:
