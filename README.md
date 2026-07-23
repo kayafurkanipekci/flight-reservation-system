@@ -23,6 +23,10 @@ A backend flight reservation system built with Spring Boot, PostgreSQL, Redis, a
 **Infra**
 - Docker Compose (API, Postgres, Redis, pgAdmin)
 
+## Architecture
+
+![Architecture Diagram](./docs/diagrams/architecture-diagram.png)
+
 ## Domain Model
 
 - **Airport** — name, IATA code (unique), city, country
@@ -33,6 +37,8 @@ A backend flight reservation system built with Spring Boot, PostgreSQL, Redis, a
 - **Ticket** — links a Reservation to a Flight, with a seat number. This is the join table between Reservation and Flight, so a single reservation can hold tickets for more than one flight (e.g. a connecting trip). A seat can only be booked once per flight (`UNIQUE(flight_id, seat_number)`).
 
 Schema is versioned with Flyway migrations (V1–V8), covering airports, airplanes, seed data, users, flights, reservations, tickets, and a migration that moved existing user passwords to BCrypt hashes.
+
+![ER Diagram](./docs/diagrams/er-diagram.png)
 
 ## Auth & Security
 
@@ -97,6 +103,33 @@ Run all tests:
 cd backend
 .\mvnw.cmd clean test
 ```
+
+---
+
+## Request Flow
+
+Example: creating a reservation, from login through cache and email confirmation.
+
+![Sequence Diagram](./docs/diagrams/sequence-diagram.png)
+
+## CI/CD Pipeline
+
+GitHub Actions runs on every push and pull request to `main` (`.github/workflows/ci.yml`), with three jobs:
+
+1. **`build-and-test`** — sets up JDK 21, runs `./mvnw clean verify`. This runs the full Testcontainers integration suite (real PostgreSQL, Redis, MailHog containers), not mocks. A failing test blocks the merge.
+2. **`frontend-ci`** — installs frontend deps, runs `npm run lint` (oxlint) and `npm run build`. A lint error or type error fails the job.
+3. **`build-and-push-image`** — runs only on a successful push to `main` (after both jobs above pass). It:
+   - Logs into GitHub Container Registry (GHCR)
+   - Builds the backend Docker image and pushes it tagged both with the commit SHA and `latest`
+   - Runs a **Trivy vulnerability scan** against the pushed image. Dependency-level vulnerabilities (e.g. the Postgres JDBC driver) are fixed directly in `pom.xml`. Base-image (Alpine) vulnerabilities are reported in the CI logs for visibility but don't fail the build, since they're outside this project's control until the upstream image is patched.
+
+**Deployment:** the backend and frontend are deployed on Railway, each connected directly to the `main` branch — a push to `main` (after CI passes) triggers an automatic redeploy on both services. PostgreSQL and Redis run as managed Railway services.
+
+
+## Observability
+
+- **Health checks:** `GET /actuator/health` (public, no auth required) reports the status of the app, PostgreSQL, and Redis connections. Used as the Docker Compose healthcheck for the API container and as Railway's deploy healthcheck path.
+- **Structured logging:** application logs are emitted as JSON (ECS format) instead of plain text, making them machine-parseable for log aggregation tools.
 
 ---
 
