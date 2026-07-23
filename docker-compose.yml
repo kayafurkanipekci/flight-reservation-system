@@ -11,9 +11,18 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
     depends_on:
-      - flight-postgres
+      flight-postgres:
+        condition: service_healthy
+      flight-redis:
+        condition: service_healthy
     networks:
       - flight-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   flight-frontend:
     build:
@@ -39,6 +48,11 @@ services:
       POSTGRES_DB: flight_db
     networks:
       - flight-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   flight-redis:
     image: redis:7-alpine
@@ -47,6 +61,11 @@ services:
       - "6379:6379"
     networks:
       - flight-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   flight-pgadmin:
     image: dpage/pgadmin4:latest
@@ -67,6 +86,8 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
+    networks:
+      - flight-network
 
 networks:
   flight-network:
